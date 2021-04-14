@@ -30,7 +30,7 @@ template <typename Dtype>
 class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
  public:
   explicit CuDNNConvolutionLayer(const LayerParameter& param)
-      : ConvolutionLayer<Dtype>(param), handles_setup_(false) {}
+      : ConvolutionLayer<Dtype>(param), handles_setup_(false), shapes_ready_(false) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
@@ -44,6 +44,7 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
   bool handles_setup_;
+  bool shapes_ready_;
   cudnnHandle_t* handle_;
   cudaStream_t*  stream_;
 
@@ -57,6 +58,8 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
   cudnnFilterDescriptor_t      filter_desc_;
   vector<cudnnConvolutionDescriptor_t> conv_descs_;
   int bottom_offset_, top_offset_, bias_offset_;
+
+  std::vector<int> cudnn_shape_;
 
   size_t *workspace_fwd_sizes_;
   size_t *workspace_bwd_data_sizes_;
