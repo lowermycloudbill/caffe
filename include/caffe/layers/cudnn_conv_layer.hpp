@@ -30,7 +30,9 @@ template <typename Dtype>
 class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
  public:
   explicit CuDNNConvolutionLayer(const LayerParameter& param)
-      : ConvolutionLayer<Dtype>(param), handles_setup_(false), shapes_ready_(false) {}
+      : ConvolutionLayer<Dtype>(param),
+        handles_setup_(false),
+        shapes_ready_(false) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
@@ -42,6 +44,8 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
       const vector<Blob<Dtype>*>& top);
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  void findOptimalAlgorithm(int index, size_t workspace_limit_bytes);
 
   bool handles_setup_;
   bool shapes_ready_;
